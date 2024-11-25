@@ -133,7 +133,12 @@ void DoublyLinkedList<T>::printList()
     Node<T> *curr = head;
     while (curr->next)
     {
-        cout << "[" << curr->data << ", "
+        cout << "[" << curr->data << ", ";
     }
     cout << "]" << endl;
 }
+
+template class DoublyLinkedList<int>;
+template class DoublyLinkedList<char>;
+template class DoublyLinkedList<float>;
+template class DoublyLinkedList<double>;
