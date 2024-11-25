@@ -21,104 +21,160 @@ DoublyLinkedList<T>::~DoublyLinkedList()
 template <typename T>
 void DoublyLinkedList<T>::insertatFirst(T data)
 {
-    if (!isEmpty())
+    Node<T> *newNode = new Node<T>;
+    newNode->data = data;
+    newNode->next = head;
+    newNode->prev = nullptr;
+
+    if (head != nullptr)
     {
-        head->data = data;
-        head->next = NULL;
-        head->prev = NULL;
+        head->prev = newNode;
     }
 
-    Node<T> *newNode = new Node<T>;
-    newNode->next = head;
-    head->prev = newNode;
     head = newNode;
 }
 
 template <typename T>
 void DoublyLinkedList<T>::insert(T data, int pos)
 {
-    if (!isEmpty())
+    if (pos == 0)
     {
         insertatFirst(data);
+        return;
     }
 
     Node<T> *currNode = head;
     int counter = 0;
-    while (currNode->next && counter != pos)
+
+    while (currNode != nullptr && counter < pos - 1)
     {
         counter++;
         currNode = currNode->next;
     }
+
+    if (currNode == nullptr)
+    {
+        insertatLast(data);
+        return;
+    }
+
     Node<T> *newNode = new Node<T>;
     newNode->data = data;
     newNode->next = currNode->next;
     newNode->prev = currNode;
+
+    if (currNode->next != nullptr)
+    {
+        currNode->next->prev = newNode;
+    }
+    currNode->next = newNode;
 }
 
 template <typename T>
 void DoublyLinkedList<T>::insertatLast(T data)
 {
-    if (!isEmpty())
+    Node<T> *newNode = new Node<T>;
+    newNode->data = data;
+    newNode->next = nullptr;
+
+    if (head == nullptr)
     {
-        insertatFirst(data);
+        newNode->prev = nullptr;
+        head = newNode;
+        return;
     }
 
     Node<T> *curr = head;
-
     while (curr->next)
     {
         curr = curr->next;
     }
-    Node<T> *newNode = new Node<T>;
-    newNode->data = data;
-    newNode->next = curr->next;
+
+    curr->next = newNode;
     newNode->prev = curr;
 }
 
 template <typename T>
 void DoublyLinkedList<T>::deleteatFirst()
 {
-    if (!isEmpty())
+    if (isEmpty())
     {
         return;
     }
+
     Node<T> *toDelete = head;
     head = head->next;
+
+    if (head != nullptr)
+    {
+        head->prev = nullptr;
+    }
+
     delete toDelete;
 }
 
 template <typename T>
 void DoublyLinkedList<T>::deleteData(T data)
 {
-    if (!isEmpty())
+    if (isEmpty())
     {
         return;
     }
+
     Node<T> *currNode = head;
-    while (currNode->next && data != currNode->data)
+    while (currNode != nullptr && currNode->data != data)
     {
         currNode = currNode->next;
     }
-    Node<T> *toDelete = currNode;
-    currNode->prev = currNode->next;
-    delete toDelete;
+
+    if (currNode == nullptr)
+    {
+        return; // Data not found
+    }
+
+    if (currNode->prev != nullptr)
+    {
+        currNode->prev->next = currNode->next;
+    }
+
+    if (currNode->next != nullptr)
+    {
+        currNode->next->prev = currNode->prev;
+    }
+
+    if (currNode == head)
+    {
+        head = currNode->next;
+    }
+
+    delete currNode;
 }
 
 template <typename T>
 void DoublyLinkedList<T>::deleteatLast()
 {
-    if (!isEmpty())
+    if (isEmpty())
     {
         return;
     }
+
     Node<T> *currNode = head;
-    while (currNode->next)
+    while (currNode->next != nullptr)
     {
         currNode = currNode->next;
     }
-    Node<T> *toDelete = currNode;
-    currNode->prev = NULL;
-    delete toDelete;
+
+    if (currNode->prev != nullptr)
+    {
+        currNode->prev->next = nullptr;
+    }
+
+    if (currNode == head)
+    {
+        head = nullptr;
+    }
+
+    delete currNode;
 }
 
 template <typename T>
@@ -131,7 +187,7 @@ template <typename T>
 void DoublyLinkedList<T>::printList()
 {
     Node<T> *curr = head;
-    while (curr->next)
+    while (curr)
     {
         cout << "[" << curr->data << ", ";
     }
