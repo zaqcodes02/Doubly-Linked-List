@@ -187,11 +187,12 @@ template <typename T>
 void DoublyLinkedList<T>::printList()
 {
     Node<T> *curr = head;
-    while (curr)
+    while (curr != nullptr)
     {
-        cout << "[" << curr->data << ", ";
+        cout << "[" << curr->data << "] ";
+        curr = curr->next;
     }
-    cout << "]" << endl;
+    cout << endl;
 }
 
 template class DoublyLinkedList<int>;
